@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+
     @Override
     public List<ItemDto> getAllForOwner(Long userId) {
         return itemRepository.findAllByOwnerId(userId).stream()

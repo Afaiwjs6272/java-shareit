@@ -11,7 +11,7 @@ import java.util.Map;
 @Repository
 public class ItemRepositoryImpl implements ItemRepository {
 
-    private final Map<Long, Item> items =  new HashMap<>();
+    private final Map<Long, Item> items = new HashMap<>();
     private Long id = 0L;
 
     @Override
@@ -26,12 +26,12 @@ public class ItemRepositoryImpl implements ItemRepository {
         if (text.isEmpty()) {
             return List.of();
         }
-            return items.values().stream()
-                    .filter(Item::getAvailable)
-                    .filter(item -> item.getDescription().toLowerCase().contains(text.toLowerCase())
-                    || item.getName().toLowerCase().contains(text.toLowerCase()))
-                    .toList();
-        }
+        return items.values().stream()
+                .filter(Item::getAvailable)
+                .filter(item -> item.getDescription().toLowerCase().contains(text.toLowerCase())
+                        || item.getName().toLowerCase().contains(text.toLowerCase()))
+                .toList();
+    }
 
     @Override
     public Item findById(Long id) {

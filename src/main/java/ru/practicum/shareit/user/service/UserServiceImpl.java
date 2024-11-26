@@ -7,6 +7,7 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
+
 import java.util.List;
 
 @Slf4j
@@ -15,6 +16,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+
     @Override
     public UserDto addUser(UserDto userDto) {
         return UserMapper.toUserDto(userRepository.addUser(UserMapper.toUser(userDto)));
@@ -41,6 +43,7 @@ public class UserServiceImpl implements UserService {
         }
         return UserMapper.toUserDto(userRepository.updateUser(updatedUser));
     }
+
     @Override
     public UserDto getUserById(Long id) {
         return UserMapper.toUserDto(userRepository.getUserById(id));

@@ -6,7 +6,9 @@ import ru.practicum.shareit.user.exception.EmailException;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
 import ru.practicum.shareit.user.model.User;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Repository
@@ -37,7 +39,7 @@ public class UserRepositoryImpl implements UserRepository {
         }
         checkValidUser(user);
         isEmailExist(user.getEmail(), user.getId());
-        users.put(user.getId(),user);
+        users.put(user.getId(), user);
         return user;
     }
 
