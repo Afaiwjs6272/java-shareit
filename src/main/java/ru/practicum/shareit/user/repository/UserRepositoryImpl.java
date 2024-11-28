@@ -46,7 +46,7 @@ public class UserRepositoryImpl implements UserRepository {
     public User getUserById(Long id) {
         User user = users.get(id);
         if (user == null) {
-            throw new UserNotFoundException("user with id = " + id +" not found");
+            throw new UserNotFoundException("user with id = " + id + " not found");
         }
         return user;
     }
@@ -65,7 +65,7 @@ public class UserRepositoryImpl implements UserRepository {
                 .findFirst()
                 .orElse(null);
 
-        if (user != null ) {
+        if (user != null) {
             throw new EmailException("Email already exists");
         }
     }
