@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.shareit.user.dto.Create;
 
 @Data
 @AllArgsConstructor
@@ -15,7 +16,7 @@ public class User {
     private Long id;
     @NotEmpty
     private String name;
-    @Email(message = "Некорректный формат email")
-    @NotEmpty
+    @Email()
+    @NotEmpty(groups = Create.class)
     private String email;
 }

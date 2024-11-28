@@ -15,12 +15,12 @@ import java.util.Map;
 public class UserRepositoryImpl implements UserRepository {
 
     private final Map<Long, User> users = new HashMap<>();
-    private Long id = 0L;
+    private Long id = 1L;
 
     @Override
     public User addUser(User user) {
-        checkValidUser(user);
         isEmailExist(user.getEmail(), null);
+        checkValidUser(user);
         user.setId(id);
         users.put(user.getId(), user);
         increaseId();
@@ -37,7 +37,6 @@ public class UserRepositoryImpl implements UserRepository {
         if (!users.containsKey(user.getId())) {
             throw new UserNotFoundException("User not found");
         }
-        checkValidUser(user);
         isEmailExist(user.getEmail(), user.getId());
         users.put(user.getId(), user);
         return user;
@@ -45,10 +44,11 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User getUserById(Long id) {
-        if (!users.containsKey(id)) {
-            throw new UserNotFoundException("user not found");
+        User user = users.get(id);
+        if (user == null) {
+            throw new UserNotFoundException("user with id = " + id +" not found");
         }
-        return users.get(id);
+        return user;
     }
 
     @Override
@@ -58,12 +58,6 @@ public class UserRepositoryImpl implements UserRepository {
                 .toList();
     }
 
-    private void checkValidUser(User user) {
-        if (user.getEmail() == null) {
-            throw new RuntimeException("user not valid");
-        }
-    }
-
     private void isEmailExist(String email, Long userId) {
         User user = users.values().stream()
                 .filter(u -> u != null && u.getId() != null && !u.getId().equals(userId))
@@ -71,11 +65,16 @@ public class UserRepositoryImpl implements UserRepository {
                 .findFirst()
                 .orElse(null);
 
-        if (user != null) {
+        if (user != null ) {
             throw new EmailException("Email already exists");
         }
     }
 
+    private void checkValidUser(User user) {
+        if (user.getEmail().isEmpty()) {
+            throw new UserNotFoundException("email should exist");
+        }
+    }
 
     private void increaseId() {
         id++;

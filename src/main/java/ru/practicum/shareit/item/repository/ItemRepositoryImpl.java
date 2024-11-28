@@ -12,7 +12,7 @@ import java.util.Map;
 public class ItemRepositoryImpl implements ItemRepository {
 
     private final Map<Long, Item> items = new HashMap<>();
-    private Long id = 0L;
+    private Long id = 1L;
 
     @Override
     public List<Item> findAllByOwnerId(Long userId) {

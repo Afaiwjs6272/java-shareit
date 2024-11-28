@@ -19,6 +19,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto addUser(UserDto userDto) {
+        log.info("new user was added");
         return UserMapper.toUserDto(userRepository.addUser(UserMapper.toUser(userDto)));
     }
 
@@ -41,6 +42,7 @@ public class UserServiceImpl implements UserService {
         if (updatedUser.getEmail() == null) {
             updatedUser.setEmail(user.getEmail());
         }
+        log.info("user with id = {} was updated", id);
         return UserMapper.toUserDto(userRepository.updateUser(updatedUser));
     }
 

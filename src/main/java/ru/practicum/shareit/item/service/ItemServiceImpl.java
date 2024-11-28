@@ -1,12 +1,14 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.exception.ItemNotFoundException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.user.exception.UserNotFoundException;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -14,6 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Slf4j
 @Service
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
@@ -50,6 +53,7 @@ public class ItemServiceImpl implements ItemService {
         if (newItem.getAvailable() == null) {
             newItem.setAvailable(item.getAvailable());
         }
+        log.info("item with id = {} was updated by user with id = {}", itemId, userId);
         return ItemMapper.toItemDto(itemRepository.update(newItem));
     }
 
@@ -64,6 +68,7 @@ public class ItemServiceImpl implements ItemService {
         User user = checkValidUser(userId);
         Item item = ItemMapper.toItem(itemDto);
         item.setOwner(user);
+        log.info("item with id = {} was added", itemDto.getId());
         return ItemMapper.toItemDto(itemRepository.add(item));
     }
 
@@ -76,6 +81,10 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private User checkValidUser(Long userId) {
-        return userRepository.getUserById(userId);
+        User user = userRepository.getUserById(userId);
+        if (user == null) {
+            throw new UserNotFoundException("user with id = " + userId + " not found");
+        }
+        return user;
     }
 }
