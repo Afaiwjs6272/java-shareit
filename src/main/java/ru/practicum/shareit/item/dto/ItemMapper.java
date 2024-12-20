@@ -20,4 +20,13 @@ public class ItemMapper {
                 .available(itemDto.getAvailable())
                 .build();
     }
+
+    public static ItemOwnerDto toOwnerDto(Item item) {
+        return ItemOwnerDto.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .description(item.getDescription())
+                .available(item.getAvailable())
+                .build();
+    }
 }

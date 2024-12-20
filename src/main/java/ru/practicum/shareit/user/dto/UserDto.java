@@ -11,6 +11,7 @@ public class UserDto {
     private Long id;
     @NotEmpty(groups = Create.class)
     private String name;
+    @NotEmpty(groups = Create.class)
     @Email()
     private String email;
 }
