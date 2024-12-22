@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.State;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.stream.StreamSupport;
 
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
@@ -31,11 +33,12 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto createBooking(Long userId, BookingDto bookingDto) {
-        if (bookingDto.getStart().equals(bookingDto.getEnd())) {
+        if ((bookingDto.getStart().equals(bookingDto.getEnd())) || bookingDto.getStart().isAfter(bookingDto.getEnd())) {
             throw new BookingValidationException("interval between start and end cannot be 0");
         }
         User user = userExistCheckAndLoad(userId);
         Item item = itemExistCheckAndLoad(bookingDto.getItemId());
+        log.info("user with id = {} create booking = {}", userId, bookingDto.getId());
         Booking booking = Booking.builder()
                 .start(bookingDto.getStart())
                 .end(bookingDto.getEnd())
@@ -65,6 +68,7 @@ public class BookingServiceImpl implements BookingService {
             } else {
                 booking.setStatus(Status.REJECTED);
             }
+            log.info("user with id = {}, confirmed booking = {}", userId, id);
             return BookingMapper.toDto(bookingRepository.save(booking));
         }
         throw new BookingValidationException("access for details denied");
