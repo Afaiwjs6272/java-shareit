@@ -47,7 +47,7 @@ class BookingServiceTest {
                 "item", "description", true,
                 null, null, null, null));
     }
-    
+
     @Test
     public void failureCreateBookingWhenStartIsAfterEnd() {
         BookingDto bookingDto = new BookingDto(1L, LocalDateTime.now().plusHours(1), LocalDateTime.now(), itemDto.getId(),
