@@ -4,8 +4,8 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import ru.practicum.shareit.booking.dto.State;
-import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.model.QBooking;
+import ru.practicum.shareit.booking.model.Status;
 
 import java.time.LocalDateTime;
 

@@ -26,13 +26,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(MockitoExtension.class)
 class BookingControllerTest {
+    private final ObjectMapper mapper = new ObjectMapper();
     @Mock
     private BookingService bookingService;
     @InjectMocks
     private BookingController controller;
-
-    private final ObjectMapper mapper = new ObjectMapper();
-
     private MockMvc mvc;
 
     private BookingDto dto;
@@ -63,19 +61,19 @@ class BookingControllerTest {
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isOk())
-                        .andExpect(content().json(mapper.writeValueAsString(dto)));
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(dto)));
     }
 
     @Test
     public void confirmBooking() throws Exception {
         when(bookingService.confirmBooking(1L, 1L, true)).thenReturn(dto);
         mvc.perform(patch("/bookings/1?approved=true")
-                .content(mapper.writeValueAsString(dto))
-                .header("X-Sharer-User-Id", 1L)
-                .characterEncoding(StandardCharsets.UTF_8)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
+                        .content(mapper.writeValueAsString(dto))
+                        .header("X-Sharer-User-Id", 1L)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(dto)));
     }

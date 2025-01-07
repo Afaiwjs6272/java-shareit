@@ -53,29 +53,29 @@ class BookingDtoTest {
 
     @Test
     public void testValidationSuccess() {
-        BookItemRequestDto bookItemRequestDto = new BookItemRequestDto(1L,LocalDateTime.now().plusHours(2),LocalDateTime.now().plusHours(10));
-            Set<ConstraintViolation<BookItemRequestDto>> violations = validator.validate(bookItemRequestDto);
-            assertTrue(violations.isEmpty());
+        BookItemRequestDto bookItemRequestDto = new BookItemRequestDto(1L, LocalDateTime.now().plusHours(2), LocalDateTime.now().plusHours(10));
+        Set<ConstraintViolation<BookItemRequestDto>> violations = validator.validate(bookItemRequestDto);
+        assertTrue(violations.isEmpty());
     }
 
     @Test
     public void testValidationFailureOnStart() {
-        BookItemRequestDto bookItemRequestDto = new BookItemRequestDto(1L,LocalDateTime.now().minusDays(1),LocalDateTime.now().plusHours(1));
+        BookItemRequestDto bookItemRequestDto = new BookItemRequestDto(1L, LocalDateTime.now().minusDays(1), LocalDateTime.now().plusHours(1));
         Set<ConstraintViolation<BookItemRequestDto>> violations = validator.validate(bookItemRequestDto);
         assertFalse(violations.isEmpty());
     }
 
     @Test
     public void testValidationFailureOnEnd() {
-        BookItemRequestDto bookItemRequestDto = new BookItemRequestDto(1L,LocalDateTime.now(),LocalDateTime.now());
+        BookItemRequestDto bookItemRequestDto = new BookItemRequestDto(1L, LocalDateTime.now(), LocalDateTime.now());
         Set<ConstraintViolation<BookItemRequestDto>> violations = validator.validate(bookItemRequestDto);
         assertFalse(violations.isEmpty());
     }
 
     @Test
     public void testValidationFailureWhenAll() {
-        BookItemRequestDto bookItemRequestDto = new BookItemRequestDto(1L,LocalDateTime.now().minusDays(1),LocalDateTime.now());
+        BookItemRequestDto bookItemRequestDto = new BookItemRequestDto(1L, LocalDateTime.now().minusDays(1), LocalDateTime.now());
         Set<ConstraintViolation<BookItemRequestDto>> violations = validator.validate(bookItemRequestDto);
-        assertEquals(violations.size(),2);
+        assertEquals(violations.size(), 2);
     }
 }
