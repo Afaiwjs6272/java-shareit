@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-class ItemServiceImplTest {
+class ItemServiceTest {
     private final EntityManager entityManager;
     private final ItemService itemService;
     private final UserService userService;
