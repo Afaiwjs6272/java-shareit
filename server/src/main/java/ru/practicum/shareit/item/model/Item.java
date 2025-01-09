@@ -15,14 +15,15 @@ public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "name")
+    @Column(nullable = false)
     private String name;
-    @Column(name = "description", nullable = false)
+    @Column(nullable = false)
     private String description;
-    @Column(name = "available", nullable = false)
+    @Column(nullable = false)
     private Boolean available;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id")
+    @ToString.Exclude
     private User owner;
     @ManyToOne
     @JoinColumn(name = "request_id")

@@ -16,13 +16,13 @@ public class ItemMapper {
         return iDto;
     }
 
-    public static Item toItem(ItemDto itemDto) {
-        return Item.builder()
-                .id(itemDto.getId())
-                .name(itemDto.getName())
-                .description(itemDto.getDescription())
-                .available(itemDto.getAvailable())
-                .build();
+    public static Item toItem(ItemDto dto) {
+        Item item = new Item();
+        item.setId(dto.getId());
+        item.setName(dto.getName());
+        item.setDescription(dto.getDescription());
+        item.setAvailable(dto.getAvailable());
+        return item;
     }
 
     public static ItemShortDto toShortDto(Item item) {

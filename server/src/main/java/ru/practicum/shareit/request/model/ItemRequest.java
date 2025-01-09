@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
@@ -16,13 +17,11 @@ import java.time.LocalDateTime;
 public class ItemRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
-    @Column(name = "description")
     private String description;
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @ToString.Exclude
     private User requester;
-    @Column(name = "created")
     private LocalDateTime created;
 }

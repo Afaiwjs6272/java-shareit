@@ -34,7 +34,7 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
-    private final RequestRepository requestRepository;
+    private final RequestRepository itemRequestRepository;
 
     @Override
     public List<ItemDto> getItemsByOwnerId(Long userId) {
@@ -97,9 +97,6 @@ public class ItemServiceImpl implements ItemService {
         }
         Item updateItem = ItemMapper.toItem(itemDto);
         updateItem.setOwner(owner);
-        if (updateItem.getId() == null) {
-            updateItem.setId(item.getId());
-        }
         if (updateItem.getName() == null) {
             updateItem.setName(item.getName());
         }
@@ -117,12 +114,11 @@ public class ItemServiceImpl implements ItemService {
         Booking booking = bookingRepository
                 .findOneByStatusAndBookerIdAndItemIdAndEndBefore(Status.APPROVED, userId, itemId, LocalDateTime.now())
                 .orElseThrow(() -> new BookingValidationException("This booking doesn't exist"));
-        Comment comment = Comment.builder()
-                .text(commentDto.getText())
-                .user(booking.getBooker())
-                .item(booking.getItem())
-                .created(LocalDateTime.now())
-                .build();
+        Comment comment = new Comment();
+        comment.setText(commentDto.getText());
+        comment.setAuthor(booking.getBooker());
+        comment.setCreated(LocalDateTime.now());
+        comment.setItem(booking.getItem());
         return CommentMapper.toDto(commentRepository.save(comment));
     }
 
@@ -134,6 +130,6 @@ public class ItemServiceImpl implements ItemService {
         if (requestId == null) {
             return null;
         }
-        return requestRepository.findById(requestId).orElse(null);
+        return itemRequestRepository.findById(requestId).orElse(null);
     }
 }

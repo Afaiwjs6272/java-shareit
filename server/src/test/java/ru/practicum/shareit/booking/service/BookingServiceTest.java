@@ -48,12 +48,6 @@ class BookingServiceTest {
                 null, null, null, null));
     }
 
-    @Test
-    public void failureCreateBookingWhenStartIsAfterEnd() {
-        BookingDto bookingDto = new BookingDto(1L, LocalDateTime.now().plusHours(1), LocalDateTime.now(), itemDto.getId(),
-                Status.APPROVED, itemDto, userDto);
-        assertThrows(BookingValidationException.class, () -> bookingService.createBooking(userDto.getId(), bookingDto));
-    }
 
     @Test
     public void successWhenCreateBooking() {

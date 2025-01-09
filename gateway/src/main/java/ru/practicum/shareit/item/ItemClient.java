@@ -32,7 +32,7 @@ public class ItemClient extends BaseClient {
     }
 
     public ResponseEntity<Object> createItem(long userId, ItemDto itemDto) {
-        return post("/", userId, itemDto);
+        return post("", userId, itemDto);
     }
 
 
@@ -52,9 +52,6 @@ public class ItemClient extends BaseClient {
     }
 
     public ResponseEntity<Object> createComment(long userId, Long itemId, CommentDto commentDto) {
-        Map<String, Object> parameters = Map.of(
-                "comment", commentDto
-        );
-        return post("/" + itemId + "/" + parameters, userId);
+        return post("/" + itemId + "/comment", userId, commentDto);
     }
 }

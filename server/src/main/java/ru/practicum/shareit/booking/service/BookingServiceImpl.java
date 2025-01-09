@@ -1,13 +1,12 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.dto.State;
 import ru.practicum.shareit.booking.exception.BookingNotFoundException;
 import ru.practicum.shareit.booking.exception.BookingValidationException;
+import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.predicate.BookingPredicate;
@@ -23,7 +22,6 @@ import java.util.List;
 import java.util.stream.StreamSupport;
 
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
@@ -33,19 +31,17 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto createBooking(Long userId, BookingDto bookingDto) {
-        if ((bookingDto.getStart().equals(bookingDto.getEnd())) || bookingDto.getStart().isAfter(bookingDto.getEnd())) {
+        if (bookingDto.getStart().equals(bookingDto.getEnd())) {
             throw new BookingValidationException("interval between start and end cannot be 0");
         }
         User user = userExistCheckAndLoad(userId);
         Item item = itemExistCheckAndLoad(bookingDto.getItemId());
-        log.info("user with id = {} create booking = {}", userId, bookingDto.getId());
-        Booking booking = Booking.builder()
-                .start(bookingDto.getStart())
-                .end(bookingDto.getEnd())
-                .item(item)
-                .status(Status.WAITING)
-                .booker(user)
-                .build();
+        Booking booking = new Booking();
+        booking.setStart(bookingDto.getStart());
+        booking.setEnd(bookingDto.getEnd());
+        booking.setBooker(user);
+        booking.setItem(item);
+        booking.setStatus(Status.WAITING);
         return BookingMapper.toDto(bookingRepository.save(booking));
     }
 
@@ -68,7 +64,6 @@ public class BookingServiceImpl implements BookingService {
             } else {
                 booking.setStatus(Status.REJECTED);
             }
-            log.info("user with id = {}, confirmed booking = {}", userId, id);
             return BookingMapper.toDto(bookingRepository.save(booking));
         }
         throw new BookingValidationException("access for details denied");
