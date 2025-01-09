@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.State;
 import ru.practicum.shareit.booking.exception.BookingNotFoundException;
+import ru.practicum.shareit.booking.exception.BookingValidationException;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -60,6 +61,26 @@ class BookingServiceTest {
         assertThat(booking, notNullValue());
         assertThat(booking.getStart(), equalTo(bookingDto.getStart()));
         assertThat(booking.getEnd(), equalTo(bookingDto.getEnd()));
+    }
+
+    @Test
+    void wrongIntervalTestFail() {
+        LocalDateTime now = LocalDateTime.now();
+        BookingDto bookingDto = new BookingDto(null, now, now,
+                itemDto.getId(), null, null, null);
+        assertThrows(BookingValidationException.class, () -> bookingService.createBooking(userDto.getId(), bookingDto));
+    }
+
+    @Test
+    void itemAvailableFalseTestFail() {
+        ItemDto wrongItem = itemService.createItemByUser(userDto.getId(), new ItemDto(null,
+                "item", "description", false,
+                null, null, null, null));
+        LocalDateTime now = LocalDateTime.now();
+        BookingDto bookingDto = new BookingDto(null, now, now.plusDays(1),
+                wrongItem.getId(), null, null, null);
+
+        assertThrows(BookingValidationException.class, () -> bookingService.createBooking(userDto.getId(), bookingDto));
     }
 
     @Test
