@@ -15,6 +15,7 @@ import ru.practicum.shareit.booking.exception.BookingValidationException;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.exception.ItemNotFoundException;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.service.RequestService;
@@ -59,13 +60,20 @@ class BookingServiceTest {
         BookingDto bookingDto = new BookingDto(1L, LocalDateTime.now(), LocalDateTime.now().plusHours(1), itemDto.getId(),
                 Status.WAITING, itemDto, userDto);
         bookingDto = bookingService.createBooking(userDto.getId(), bookingDto);
-
         TypedQuery<Booking> query = entityManager.createQuery("SELECT b from Booking as b where b.id = :id", Booking.class);
         Booking booking = query.setParameter("id", bookingDto.getId()).getSingleResult();
 
         assertThat(booking, notNullValue());
         assertThat(booking.getStart(), equalTo(bookingDto.getStart()));
         assertThat(booking.getEnd(), equalTo(bookingDto.getEnd()));
+    }
+
+    @Test
+    void failWhenCreateBooking() {
+        LocalDateTime now = LocalDateTime.now();
+        BookingDto bookingDto = new BookingDto(1L, now, now,
+                2L, null, null, null);
+        assertThrows(ItemNotFoundException.class, () -> bookingService.createBooking(userDto.getId(), bookingDto));
     }
 
     @Test
