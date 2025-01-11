@@ -31,9 +31,6 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto createBooking(Long userId, BookingDto bookingDto) {
-        if (bookingDto.getStart().equals(bookingDto.getEnd())) {
-            throw new BookingValidationException("interval between start and end cannot be 0");
-        }
         User user = userExistCheckAndLoad(userId);
         Item item = itemExistCheckAndLoad(bookingDto.getItemId());
         Booking booking = new Booking();

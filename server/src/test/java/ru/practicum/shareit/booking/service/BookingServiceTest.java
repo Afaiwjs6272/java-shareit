@@ -16,6 +16,8 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.request.dto.ItemRequestDto;
+import ru.practicum.shareit.request.service.RequestService;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
 import ru.practicum.shareit.user.service.UserService;
@@ -35,17 +37,20 @@ class BookingServiceTest {
     private final BookingService bookingService;
     private final UserService userService;
     private final ItemService itemService;
+    private final RequestService requestService;
     private final EntityManager entityManager;
 
     private UserDto userDto;
     private ItemDto itemDto;
+    private ItemRequestDto itemRequestDto;
 
     @BeforeEach
     void setUp() {
-        userDto = userService.add(new UserDto(null, "aa", "dad@example.ru"));
-        itemDto = itemService.createItemByUser(userDto.getId(), new ItemDto(null,
-                "item", "description", true,
-                null, null, null, null));
+        userDto = userService.add(new UserDto(1L, "john", "j@example.ru"));
+        itemRequestDto = requestService.addRequest(userDto.getId(), new ItemRequestDto(1L, "ss", userDto,
+                LocalDateTime.now(), null));
+        itemDto = itemService.createItemByUser(userDto.getId(), new ItemDto(1L, "item", "desc",
+                true, null, null, null, itemRequestDto.getId()));
     }
 
 
@@ -64,20 +69,12 @@ class BookingServiceTest {
     }
 
     @Test
-    void wrongIntervalTestFail() {
-        LocalDateTime now = LocalDateTime.now();
-        BookingDto bookingDto = new BookingDto(null, now, now,
-                itemDto.getId(), null, null, null);
-        assertThrows(BookingValidationException.class, () -> bookingService.createBooking(userDto.getId(), bookingDto));
-    }
-
-    @Test
     void itemAvailableFalseTestFail() {
-        ItemDto wrongItem = itemService.createItemByUser(userDto.getId(), new ItemDto(null,
+        ItemDto wrongItem = itemService.createItemByUser(userDto.getId(), new ItemDto(1L,
                 "item", "description", false,
-                null, null, null, null));
+                null, null, null, itemRequestDto.getId()));
         LocalDateTime now = LocalDateTime.now();
-        BookingDto bookingDto = new BookingDto(null, now, now.plusDays(1),
+        BookingDto bookingDto = new BookingDto(1L, now, now.plusDays(1),
                 wrongItem.getId(), null, null, null);
 
         assertThrows(BookingValidationException.class, () -> bookingService.createBooking(userDto.getId(), bookingDto));

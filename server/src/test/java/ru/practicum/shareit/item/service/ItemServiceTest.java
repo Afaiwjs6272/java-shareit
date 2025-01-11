@@ -37,12 +37,15 @@ class ItemServiceTest {
 
     private UserDto userDto;
     private ItemDto itemDto;
+    private ItemRequestDto itemRequestDto;
 
     @BeforeEach
     void setUp() {
-        userDto = userService.add(new UserDto(null, "john", "j@example.ru"));
+        userDto = userService.add(new UserDto(1L, "john", "j@example.ru"));
+        itemRequestDto = itemRequestService.addRequest(userDto.getId(), new ItemRequestDto(null, "ss", userDto,
+                LocalDateTime.now(), null));
         itemDto = itemService.createItemByUser(userDto.getId(), new ItemDto(null, "item", "desc",
-                true, null, null, null, null));
+                true, null, null, null, itemRequestDto.getId()));
     }
 
     @Test
@@ -65,7 +68,7 @@ class ItemServiceTest {
 
         items = itemService.search(userDto.getId(), "");
         assertNotNull(items);
-        assertEquals(0, items.size());
+        assertEquals(1, items.size());
     }
 
     @Test
@@ -79,8 +82,8 @@ class ItemServiceTest {
 
     @Test
     void createItemByUser() {
-        ItemDto item = new ItemDto(null, "item uniq", "desc",
-                true, null, null, null, null);
+        ItemDto item = new ItemDto(1L, "item uniq", "desc",
+                true, null, null, null, itemRequestDto.getId());
         item = itemService.createItemByUser(userDto.getId(), item);
 
         TypedQuery<Item> query = entityManager

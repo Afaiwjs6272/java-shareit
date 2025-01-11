@@ -17,6 +17,7 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.exception.RequestNotFoundException;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.RequestRepository;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
@@ -65,9 +66,6 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> search(Long userId, String query) {
         userExistCheckAndLoad(userId);
-        if (query.isEmpty()) {
-            return List.of();
-        }
         return itemRepository.findByText(query).stream().map(ItemMapper::toDto).toList();
     }
 
@@ -127,9 +125,6 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private ItemRequest requestCheckAndLoad(Long requestId) {
-        if (requestId == null) {
-            return null;
-        }
-        return itemRequestRepository.findById(requestId).orElse(null);
+        return itemRequestRepository.findById(requestId).orElseThrow(() -> new RequestNotFoundException("Request not exists"));
     }
 }

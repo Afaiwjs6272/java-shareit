@@ -16,6 +16,8 @@ import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,15 +30,14 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public ItemRequestDto addRequest(Long userId, ItemRequestDto dto) {
         User user = userExistCheckAndLoad(userId);
-        ItemRequest itemRequest = new ItemRequest();
-        itemRequest.setDescription(dto.getDescription());
-        itemRequest.setRequester(user);
+        ItemRequest itemRequest = ItemRequestMapper.toModel(dto, user);
         itemRequest.setCreated(LocalDateTime.now());
         return ItemRequestMapper.toDto(itemRequestRepository.save(itemRequest));
     }
 
     @Override
     public ItemRequestDto getById(Long userId, Long requestId) {
+        userExistCheckAndLoad(userId);
         ItemRequest request = itemRequestRepository.findItemRequestById(requestId);
         List<Item> items = itemRepository.findByRequestId(requestId);
         ItemRequestDto res = ItemRequestMapper.toDto(request);
@@ -53,12 +54,18 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public List<ItemRequestDto> getAllByUserId(Long userId) {
         List<ItemRequest> requests = itemRequestRepository.findItemRequestByRequesterId(userId, sortCreatedDesc);
-        List<Item> items = itemRepository.findByRequestIdIn(requests.stream().map(ItemRequest::getId).toList());
+
+        List<Long> requestIds = requests.stream().map(ItemRequest::getId).toList();
+
+        Map<Long, List<Item>> itemsByRequestId = itemRepository.findByRequestIdIn(requestIds).stream()
+                .collect(Collectors.groupingBy(item -> item.getRequest().getId()));
+
         return requests.stream().map(ItemRequestMapper::toDto)
-                .peek(req -> req.setItems(items.stream()
-                        .filter(i -> i.getRequest().getId().equals(req.getId()))
-                        .map(ItemMapper::toShortDto)
-                        .toList()))
+                .peek(req -> req.setItems(
+                        itemsByRequestId.getOrDefault(req.getId(), List.of()).stream()
+                                .map(ItemMapper::toShortDto)
+                                .toList()
+                ))
                 .toList();
     }
 
