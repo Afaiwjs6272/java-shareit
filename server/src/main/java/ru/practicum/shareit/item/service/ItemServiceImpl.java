@@ -125,6 +125,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private ItemRequest requestCheckAndLoad(Long requestId) {
+        if (requestId == null) {
+            return null;
+        }
         return itemRequestRepository.findById(requestId).orElseThrow(() -> new RequestNotFoundException("Request not exists"));
     }
 }
